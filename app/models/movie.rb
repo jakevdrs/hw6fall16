@@ -10,7 +10,7 @@ class Movie < ActiveRecord::Base
       Tmdb::Api.key("f4702b08c0ac6ea5b51425788bb26562")
       movies = []
       Tmdb::Movie.find(string).each do |x|
-        movies << {:tmdb_id => x.id, :title => x.title, :rating => self.get_rating(m.id), :release_date => m.release_date}
+        movies << {:tmdb_id => x.id, :title => x.title, :rating => self.get_rating(x.id), :release_date => x.release_date}
       end
       return movies
     rescue Tmdb::InvalidApiKeyError
@@ -18,10 +18,10 @@ class Movie < ActiveRecord::Base
     end
   end
 
-  def self.get_rating(movie_id)
+  def self.get_rating(tmdb_id)
     Tmdb::Api.key("f4702b08c0ac6ea5b51425788bb26562")
     rating = ''
-    Tmdb::Movie.releases(movie_id)["countries"].each do |x|
+    Tmdb::Movie.releases(tmdb_id)["countries"].each do |x|
       if x["iso_3166_1"] == "US"
         rating = x["certification"]
       end
@@ -29,10 +29,10 @@ class Movie < ActiveRecord::Base
     return rating
   end
   
-  def self.create_movie_from_tmdb(movie_id)
+  def self.create_from_tmdb(tmdb_id)
     Tmdb::Api.key("f4702b08c0ac6ea5b51425788bb26562")
-    movie_attr = Tmdb::Movie.detail(movie_id)
-    Movie.create(title: movie_attr["original_title"], rating: self.get_rating(movie_id), release_date: movie_attr["release_date"])
+    movie_attr = Tmdb::Movie.detail(tmdb_id)
+    Movie.create(title: movie_attr["original_title"], rating: self.get_rating(tmdb_id), release_date: movie_attr["release_date"])
   end
   
 end

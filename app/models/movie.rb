@@ -20,6 +20,8 @@ class Movie < ActiveRecord::Base
 
   def self.get_rating(tmdb_id)
     Tmdb::Api.key("f4702b08c0ac6ea5b51425788bb26562")
+    rescue Tmdb::InvalidApiKeyError
+      raise Movie::InvalidKeyError, 'Invalid API key'
     rating = ''
     Tmdb::Movie.releases(tmdb_id)["countries"].each do |x|
       if x["iso_3166_1"] == "US"

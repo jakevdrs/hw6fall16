@@ -8,7 +8,7 @@ class Movie < ActiveRecord::Base
   def self.find_in_tmdb(string)
     begin
       Tmdb::Api.key("f4702b08c0ac6ea5b51425788bb26562")
-      movies = Tmdb::Movie.find(string)
+      movies = []
       Tmdb::Movie.find(string).each do |x|
         movies << {:tmdb_id => x.id, :title => x.title, :rating => self.get_rating(x.id), :release_date => x.release_date}
       end

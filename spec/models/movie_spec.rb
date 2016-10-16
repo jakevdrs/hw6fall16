@@ -14,4 +14,20 @@ describe Movie do
       end
     end
   end
+  
+  describe 'adding Tmdb movie' do
+    context 'with valid key' do
+      it 'should call Tmdb detail' do
+        expect( Tmdb::Movie).to receive(:detail).with(1).and_return({})
+        allow(Tmdb::Movie).to receive(:releases).with(1).and_return(fake_results)
+        Movie.create_from_tmdb(1)
+      end
+    end
+    context 'with invalid key' do
+      it 'should raise InvalidKeyError for Tmdb detail if key is missing or invalid' do
+        allow(Tmdb::Movie).to receive(:detail).and_raise(Tmdb::InvalidApiKeyError)
+        expect {Movie.create_from_tmdb(1) }.to raise_error(Movie::InvalidKeyError)
+      end
+    end
+  end
 end

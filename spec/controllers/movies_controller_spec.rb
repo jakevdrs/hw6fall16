@@ -19,6 +19,19 @@ describe MoviesController do
       allow(Movie).to receive(:find_in_tmdb).and_return (fake_results)
       post :search_tmdb, {:search_terms => 'Ted'}
       expect(assigns(:movies)).to eq(fake_results)
-    end 
+    end
+    it 'should make the TMDb search results available to that template' do
+      fake_results = [double('Movie'), double('Movie')]
+      allow(Movie).to receive(:find_in_tmdb).and_return (fake_results)
+      post :search_tmdb, {:search_terms => 'Ted'}
+      expect(assigns(:movies)).to eq('Ted')
+    end
   end
+  
+  describe 'add_tmdb'
+    it 'should call the add from Tmdb method' do
+      selectedIndex = {double('index') => 1}
+      expect(Movie).to receive(:create_from_tmdb)
+      post :add_tmdb, {:tmdb_movies => selectedIndex}
+    end
 end

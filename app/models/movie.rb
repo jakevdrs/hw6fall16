@@ -8,13 +8,13 @@ class Movie < ActiveRecord::Base
   def self.find_in_tmdb(string)
     begin
       Tmdb::Api.key("f4702b08c0ac6ea5b51425788bb26562")
-      movies = []
+      movies = Tmdb::Movie.find(string)
       Tmdb::Movie.find(string).each do |x|
         movies << {:tmdb_id => x.id, :title => x.title, :rating => self.get_rating(x.id), :release_date => x.release_date}
       end
       return movies
     rescue Tmdb::InvalidApiKeyError
-        raise Movie::InvalidKeyError, 'Invalid API key'
+      raise Movie::InvalidKeyError, 'Invalid API key'
     end
   end
 
